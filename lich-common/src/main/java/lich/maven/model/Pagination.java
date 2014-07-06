@@ -9,21 +9,21 @@ import java.util.List;
  */
 public class Pagination<T> {
 	
-	private static final Integer PAGE_SIZE = 10; // 默认每页十条记录
+	private static final long PAGE_SIZE = 10; // 默认每页十条记录
 	
 	private List<T> resultList; // 分页结果集
 	
-	private Integer totalCount = 0; // 总记录数
+	private long totalCount = 0L; // 总记录数
 
-	private Integer pageSize = 0; // 每页记录数
+	private long pageSize = 1; // 每页记录数
 	
-	private Integer currentPage = 0; // 当前页数
+	private long currentPage = 1; // 当前页数
 	
-	private Integer startIndex = 0; // 起始记录索引
+	private long startIndex = 0; // 起始记录索引
 	
-	private Integer totalPage = 0; // 总页数
+	private long totalPage = 0; // 总页数
 	
-	public Pagination(Integer currentPage, Integer pageSize) {
+	public Pagination(long currentPage, long pageSize) {
 		this.currentPage = currentPage;
 		this.pageSize = pageSize;
 	}
@@ -36,37 +36,37 @@ public class Pagination<T> {
 		this.resultList = resultList;
 	}
 
-	public Integer getTotalCount() {
+	public long getTotalCount() {
 		return totalCount;
 	}
 
-	public void setTotalCount(Integer totalCount) {
+	public void setTotalCount(long totalCount) {
 		this.totalCount = totalCount;
 	}
 
-	public Integer getPageSize() {
+	public long getPageSize() {
 		if(pageSize<0 || pageSize==0){
 			pageSize = PAGE_SIZE;
 		}
 		return pageSize;
 	}
 
-	public void setPageSize(Integer pageSize) {
+	public void setPageSize(long pageSize) {
 		this.pageSize = pageSize;
 	}
 
-	public Integer getCurrentPage() {
+	public long getCurrentPage() {
 		if(currentPage < 0){
 			currentPage = 1;
 		}
 		return currentPage;
 	}
 
-	public void setCurrentPage(Integer currentPage) {
+	public void setCurrentPage(long currentPage) {
 		this.currentPage = currentPage;
 	}
 
-	public Integer getStartIndex() {
+	public long getStartIndex() {
 		if(currentPage==0 || currentPage<0){
 			currentPage = 1;
 		}
@@ -74,11 +74,11 @@ public class Pagination<T> {
 		return startIndex;
 	}
 
-	public void setStartIndex(Integer startIndex) {
+	public void setStartIndex(long startIndex) {
 		this.startIndex = startIndex;
 	}
 
-	public Integer getTotalPage() {
+	public long getTotalPage() {
 		if(totalCount < 0){
 			throw new IllegalArgumentException("每页的记录数量应当 > 0");
 		}else if(totalCount == 0){
@@ -91,7 +91,7 @@ public class Pagination<T> {
 		return totalPage;
 	}
 
-	public void setTotalPage(Integer totalPage) {
+	public void setTotalPage(long totalPage) {
 		this.totalPage = totalPage;
 	}
 
