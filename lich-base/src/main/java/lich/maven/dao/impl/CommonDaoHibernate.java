@@ -1,6 +1,7 @@
 package lich.maven.dao.impl;
 
 import java.io.Serializable;
+import java.lang.reflect.ParameterizedType;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -17,16 +18,31 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.type.Type;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.ObjectRetrievalFailureException;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.stereotype.Repository;
 
-@SuppressWarnings({ "unchecked", "rawtypes" })
+@Repository
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class CommonDaoHibernate<T extends Serializable> implements CommonDao {
 	
 	private Class<T> entityClass;
 	
+	@Autowired
 	private SessionFactory sessionFactory;
 	
+//	protected CommonDaoHibernate(Class<T> entityClass) {
+//		this.entityClass = entityClass;
+//	}
+	public CommonDaoHibernate() {
+//		this.entityClass = (Class<T>) ((ParameterizedType) getClass()
+//				.getGenericSuperclass()).getActualTypeArguments()[0];.
+		java.lang.reflect.Type type = ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[1];
+		System.out.println(type);
+		this.entityClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+	}
+	
+	@Override
 	public Session getCurrentSession() {
 		return sessionFactory.getCurrentSession();
 	}
@@ -76,7 +92,7 @@ public class CommonDaoHibernate<T extends Serializable> implements CommonDao {
 	}
 
 	@Override
-	public List find(String hql, Pagination pagination) throws Exception {
+	public List<T> find(String hql, Pagination pagination) throws Exception {
 		try {
 			if (pagination == null)
 				return find(hql);
@@ -84,7 +100,7 @@ public class CommonDaoHibernate<T extends Serializable> implements CommonDao {
 			throw he;
 		}
 		try {
-			List rt = find(hql, new Object[0], new Type[0], pagination);
+			List<T> rt = find(hql, new Object[0], new Type[0], pagination);
 			return rt;
 		} catch (Exception he) {
 			throw he;
@@ -92,15 +108,15 @@ public class CommonDaoHibernate<T extends Serializable> implements CommonDao {
 	}
 
 	@Override
-	public List find(String hql, Object obj, Pagination pagination) throws Exception {
+	public List<T> find(String hql, Object obj, Pagination pagination) throws Exception {
         if(pagination == null)
             return findbyhsql(hql, obj);
-        List rt = find(hql, new Object[] { obj }, pagination);
+        List<T> rt = find(hql, new Object[] { obj }, pagination);
         return rt;
 	}
 
 	@Override
-	public List find(String hql, Object[] objs, Pagination pagination) throws Exception {
+	public List<T> find(String hql, Object[] objs, Pagination pagination) throws Exception {
         Map paraMap = getParaMap(hql, objs);
         hql = (String)paraMap.get("hql");
         objs = (Object[])(Object[])paraMap.get("paraObjects");
@@ -150,25 +166,25 @@ public class CommonDaoHibernate<T extends Serializable> implements CommonDao {
 	}
 
 	@Override
-	public Object loadById(String entityName, Long id) {
+	public Object loadById(String entityName, Serializable id) {
         return getCurrentSession().get(entityName, id);
 	}
 
 	@Override
-	public List findAll() {
-        List rt = getCurrentSession().createQuery("from " + this.entityClass.getName()).list();
+	public List<T> findAll() {
+        List<T> rt = getCurrentSession().createQuery("from " + this.entityClass.getName()).list();
         return rt;
 	}
 
-	public static Map getParaMap(String hql, Object objs[]) {
-		Map paraMap = new HashMap();
+	public static Map<String, Object> getParaMap(String hql, Object objs[]) {
+		Map<String, Object> paraMap = new HashMap<String, Object>();
 		if (hql.toLowerCase().indexOf("to_date") >= 0) {
 			try {
 				String leftSql = hql.toLowerCase();
 				String mySql = hql;
 				int loc = 0;
 				int old_index = 0;
-				List paraList = new ArrayList();
+				List<Object> paraList = new ArrayList<Object>();
 				while (leftSql.indexOf("to_date") > 0) {
 					String rightStr = leftSql.substring(leftSql.indexOf("to_date"));
 					String myrightStr = mySql.substring(leftSql.indexOf("to_date"));
@@ -278,17 +294,17 @@ public class CommonDaoHibernate<T extends Serializable> implements CommonDao {
 	}
 	
 	@Override
-	public List find(String hql, Object[] objs, Type[] atype, Pagination pagination) throws Exception {
+	public List<T> find(String hql, Object[] objs, Type[] atype, Pagination pagination) throws Exception {
 		 return find(hql, objs, pagination);
 	}
 
 	@Override
-	public List findBySql(String sql) {
+	public List<T> findBySql(String sql) {
 		return this.getCurrentSession().createSQLQuery(sql).list();
 	}
 
 	@Override
-	public List findBySql(String sql, Map paramsMap) {
+	public List<T> findBySql(String sql, Map paramsMap) {
 		if(paramsMap!=null && paramsMap.size()>0){
 			return this.getCurrentSession().createSQLQuery(sql).setProperties(paramsMap).list();
 		}else{
@@ -302,14 +318,6 @@ public class CommonDaoHibernate<T extends Serializable> implements CommonDao {
 
 	public void setEntityClass(Class<T> entityClass) {
 		this.entityClass = entityClass;
-	}
-
-	public SessionFactory getSessionFactory() {
-		return sessionFactory;
-	}
-
-	public void setSessionFactory(SessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
 	}
 
 }

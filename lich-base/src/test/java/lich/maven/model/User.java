@@ -1,5 +1,7 @@
 package lich.maven.model;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,10 +16,18 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="user")
-public class User {
+public class User implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	/**
+	 * AUTO,INDENTITY,SEQUENCE 和 TABLE
+	 */
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY) 
-	private Long id;
+	private Integer id;
 	
 	@Column(name="account")
 	private String account;
@@ -31,11 +41,11 @@ public class User {
 	@Column(name="sex")
 	private String sex;
 	
-	public Long getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
@@ -69,6 +79,12 @@ public class User {
 
 	public void setSex(String sex) {
 		this.sex = sex;
+	}
+
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", account=" + account + ", realName="
+				+ realName + ", password=" + password + ", sex=" + sex + "]";
 	}
 	
 }

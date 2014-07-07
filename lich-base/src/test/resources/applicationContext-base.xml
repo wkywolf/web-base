@@ -16,7 +16,7 @@
 			<value>classpath:application.properties</value>
 		</property>
 	</bean>
-	<!-- JDBC 配置 -->
+	<!-- JDBC 数据源配置 -->
 	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="${jdbc.driverClassName}" />
 		<property name="url" value="${jdbc.url}" />
@@ -32,9 +32,14 @@
 				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
 				<prop key="hibernate.format_sql">${hibernate.format_sql}</prop>
 				<prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
+<!-- 				<prop key="hibernate.current_session_context_class">org.springframework.orm.hibernate4.SpringSessionContext</prop> -->
 			</props>
 		</property>
-		
+		<property name="packagesToScan">
+			<list>
+				<value>lich.maven.model</value>
+			</list>
+		</property>
 	</bean>
 
 	<!-- 事务管理器 --> 
@@ -46,16 +51,22 @@
 	<!-- 默认引用 transactionManager -->
 	<tx:advice id="txAdvice">
 		<tx:attributes>
-			<!-- 方法名以add开头，必须开启事务 -->
+			<!-- 方法名以XXXX开头，必须开启事务 -->
 			<tx:method name="add*" propagation="REQUIRED" />
 			<tx:method name="insert*" propagation="REQUIRED" />
 			<tx:method name="delete*" propagation="REQUIRED" />
 			<tx:method name="update*" propagation="REQUIRED" />
+<!-- 			<tx:method name="find*" propagation="REQUIRED" /> -->
 		</tx:attributes>
 	</tx:advice>
-	<!-- 该 Bean 将自动对标注 @Autowired 的 Bean 进行注入  -->     
- 	<bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/> 
- 	
- 	<context:component-scan base-package="lich-base" />
 
+	<tx:annotation-driven />
+	
+	<context:component-scan base-package="lich.maven.*" />
+	
+<!-- 	<aop:config expose-proxy="true"> -->
+<!-- 		<aop:pointcut id="txPointcut" expression="execution(* lich.maven.dao..*.*(..))" /> -->
+<!-- 		<aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut" /> -->
+<!-- 	</aop:config> -->
+	
 </beans>

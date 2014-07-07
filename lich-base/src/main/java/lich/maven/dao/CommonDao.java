@@ -17,27 +17,27 @@ import org.hibernate.type.Type;
 @SuppressWarnings("rawtypes")
 public interface CommonDao<T extends Serializable> extends Dao {
 	
-	public abstract List find(String hql, Pagination pagination) throws Exception;
+	public abstract List<T> find(String hql, Pagination pagination) throws Exception;
 
-	public abstract List find(String hql, Object objs[], Type atype[], Pagination pagination) throws Exception;
+	public abstract List<T> find(String hql, Object objs[], Type atype[], Pagination pagination) throws Exception;
 
-	public abstract List find(String hql, Object obj, Pagination pagination) throws Exception;
+	public abstract List<T> find(String hql, Object obj, Pagination pagination) throws Exception;
 
-	public abstract List find(String hql, Object objs[], Pagination pagination) throws Exception;
+	public abstract List<T> find(String hql, Object objs[], Pagination pagination) throws Exception;
 
-	public abstract List find(String hql);
+	public abstract List<T> find(String hql);
 
-	public abstract List findbyhsql(String hql, Object parameter);
+	public abstract List<T> findbyhsql(String hql, Object parameter);
 
-	public abstract List findbyhsql(String hql, Object parameters[]);
+	public abstract List<T> findbyhsql(String hql, Object parameters[]);
 
-	public abstract Object loadById(String entityName, Long id);
+	public abstract Object loadById(String entityName, Serializable id);
 
-	public abstract List findAll();
+	public abstract List<T> findAll();
 	
-	public abstract List findBySql(String sql);
+	public abstract List<T> findBySql(String sql);
 	
-	public abstract List findBySql(String sql, Map<String, Object> paramsMap);
+	public abstract List<T> findBySql(String sql, Map<String, Object> paramsMap);
 
 	public abstract Session getCurrentSession();
 
