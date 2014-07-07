@@ -2,6 +2,7 @@ package lich.maven.dao;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 import lich.maven.model.Pagination;
 
@@ -16,33 +17,27 @@ import org.hibernate.type.Type;
 @SuppressWarnings("rawtypes")
 public interface CommonDao<T extends Serializable> extends Dao {
 	
-	public abstract List find(String sql, Pagination pagination) throws Exception;
+	public abstract List find(String hql, Pagination pagination) throws Exception;
 
-	public abstract List find(String sql, Object objs[], Type atype[], Pagination pagination) throws Exception;
+	public abstract List find(String hql, Object objs[], Type atype[], Pagination pagination) throws Exception;
 
-	public abstract List find(String sql, Object obj, Pagination pagination) throws Exception;
+	public abstract List find(String hql, Object obj, Pagination pagination) throws Exception;
 
-	public abstract List find(String sql, Object objs[], Pagination pagination) throws Exception;
+	public abstract List find(String hql, Object objs[], Pagination pagination) throws Exception;
 
-	public abstract List find(String sql);
+	public abstract List find(String hql);
 
-	public abstract List findbyhsql(String sql, Object parameter);
+	public abstract List findbyhsql(String hql, Object parameter);
 
-	public abstract List findbyhsql(String sql, Object parameters[]);
+	public abstract List findbyhsql(String hql, Object parameters[]);
 
-	public abstract Object loadById(String sql, Long id);
-
-	public abstract Object loadByName(String name);
-
-	public abstract Object loadByNamedQuery(String sql, Object obj);
+	public abstract Object loadById(String entityName, Long id);
 
 	public abstract List findAll();
-
-	public abstract List findByNamedQuery(String sql);
-
-	public abstract List findByNamedQuery(String sql, Object obj);
-
-	public abstract List findByNamedQuery(String sql, Object objs[]);
+	
+	public abstract List findBySql(String sql);
+	
+	public abstract List findBySql(String sql, Map<String, Object> paramsMap);
 
 	public abstract Session getCurrentSession();
 

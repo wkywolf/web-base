@@ -76,15 +76,15 @@ public class CommonDaoHibernate<T extends Serializable> implements CommonDao {
 	}
 
 	@Override
-	public List find(String sql, Pagination pagination) throws Exception {
+	public List find(String hql, Pagination pagination) throws Exception {
 		try {
 			if (pagination == null)
-				return find(sql);
+				return find(hql);
 		} catch (Exception he) {
 			throw he;
 		}
 		try {
-			List rt = find(sql, new Object[0], new Type[0], pagination);
+			List rt = find(hql, new Object[0], new Type[0], pagination);
 			return rt;
 		} catch (Exception he) {
 			throw he;
@@ -92,20 +92,20 @@ public class CommonDaoHibernate<T extends Serializable> implements CommonDao {
 	}
 
 	@Override
-	public List find(String sql, Object obj, Pagination pagination) throws Exception {
+	public List find(String hql, Object obj, Pagination pagination) throws Exception {
         if(pagination == null)
-            return findbyhsql(sql, obj);
-        List rt = find(sql, new Object[] { obj }, pagination);
+            return findbyhsql(hql, obj);
+        List rt = find(hql, new Object[] { obj }, pagination);
         return rt;
 	}
 
 	@Override
 	public List find(String hql, Object[] objs, Pagination pagination) throws Exception {
         Map paraMap = getParaMap(hql, objs);
-        hql = (String)paraMap.get("sql");
+        hql = (String)paraMap.get("hql");
         objs = (Object[])(Object[])paraMap.get("paraObjects");
         if(pagination == null)
-            return getCurrentSession().find(hql, objs);
+            return getCurrentSession().createQuery(hql).setProperties(paraMap).list();
         pagination.setTotalCount(loadTotalSize(hql, objs));
         Query sqlQuery = null;
         List ls = null;
@@ -127,103 +127,45 @@ public class CommonDaoHibernate<T extends Serializable> implements CommonDao {
 	}
 
 	@Override
-	public List find(String sql) {
-        List rt = null;
-        if(sql.toLowerCase().indexOf("to_date") < 0)
-            rt = getCurrentSession().find(sql);
-        else
-            rt = findbyhsql(sql, new Object[0]);
-        return rt;
+	public List find(String hql) {
+        return findbyhsql(hql, new Object[0]);
 	}
 
 	@Override
-	public List findbyhsql(String sql, Object parameter) {
+	public List findbyhsql(String hql, Object parameter) {
         Object parameters[] = new Object[1];
         parameters[0] = parameter;
-        Map paraMap = getParaMap(sql, parameters);
-        sql = (String)paraMap.get("sql");
-        parameters = (Object[])(Object[])paraMap.get("paraObjects");
-        List rt = getCurrentSession().find(sql, parameters);
+        Map paraMap = getParaMap(hql, parameters);
+        hql = (String)paraMap.get("hql");
+        List rt = getCurrentSession().createQuery(hql).setProperties(paraMap).list();
         return rt;
 	}
 
 	@Override
-	public List findbyhsql(String sql, Object[] parameters) {
-        Map paraMap = getParaMap(sql, parameters);
-        sql = (String)paraMap.get("sql");
-        parameters = (Object[])(Object[])paraMap.get("paraObjects");
-        List rt = getCurrentSession().find(sql, parameters);
+	public List findbyhsql(String hql, Object[] parameters) {
+        Map paraMap = getParaMap(hql, parameters);
+        hql = (String)paraMap.get("hql");
+        List rt = getCurrentSession().createQuery(hql).setProperties(paraMap).list();
         return rt;
 	}
 
 	@Override
-	public Object loadById(String sql, Long id) {
-        Object rt = null;
-        String hql = (new StringBuilder()).append("from ").append(sql).append(" where id = ? ").toString();
-        List result = getCurrentSession().find(hql, id);
-        if(result != null && result.size() > 0)
-            if(result.size() == 1)
-                rt = result.get(0);
-            else
-                rt = null;
-        return rt;
-	}
-
-	@Override
-	public Object loadByName(String name) {
-        Object rt = null;
-        String hql = (new StringBuilder()).append("from ").append(entityClass.getName()).append(" where name = ? ").toString();
-        List result = getCurrentSession().find(hql, name);
-        if(result != null && result.size() > 0)
-            if(result.size() == 1)
-                rt = result.get(0);
-        return rt;
-	}
-
-	@Override
-	public Object loadByNamedQuery(String sql, Object obj) {
-        Object rt = null;
-        List result = findByNamedQuery(sql, obj);
-        if(result != null && result.size() > 0)
-        {
-            if(result.size() == 1)
-                return result.get(0);
-        }
-        return rt;
+	public Object loadById(String entityName, Long id) {
+        return getCurrentSession().get(entityName, id);
 	}
 
 	@Override
 	public List findAll() {
-        List rt = getCurrentSession().find((new StringBuilder()).append("from ").append(entityClass.getName()).toString());
+        List rt = getCurrentSession().createQuery("from " + this.entityClass.getName()).list();
         return rt;
 	}
 
-	@Override
-	public List findByNamedQuery(String sql) {
-        List rt = getCurrentSession().findByNamedQuery(sql);
-        return rt;
-	}
-
-	@Override
-	public List findByNamedQuery(String sql, Object parameter) {
-        List rt = getCurrentSession().findByNamedQuery(sql, parameter);
-        long end = System.currentTimeMillis();
-        return rt;
-	}
-
-	@Override
-	public List findByNamedQuery(String sql, Object[] parameters) {
-        List rt = getCurrentSession().findByNamedQuery(sql, parameters);
-        long end = System.currentTimeMillis();
-        return rt;
-	}
-
-	public static Map getParaMap(String sql, Object objs[]) {
+	public static Map getParaMap(String hql, Object objs[]) {
 		Map paraMap = new HashMap();
-		if (sql.toLowerCase().indexOf("to_date") >= 0) {
+		if (hql.toLowerCase().indexOf("to_date") >= 0) {
 			try {
-				String leftSql = sql.toLowerCase();
-				String mySql = sql;
+				String leftSql = hql.toLowerCase();
+				String mySql = hql;
 				int loc = 0;
 				int old_index = 0;
 				List paraList = new ArrayList();
@@ -269,25 +211,25 @@ public class CommonDaoHibernate<T extends Serializable> implements CommonDao {
 						paraList.add(objs[i]);
 
 				}
-				paraMap.put("sql", mySql);
+				paraMap.put("hql", mySql);
 				paraMap.put("paraObjects", ((Object) (paraList.toArray())));
 			} catch (ParseException e) {
 				e.printStackTrace();
 				paraMap.put("paraObjects", ((Object) (objs)));
-				paraMap.put("sql", sql);
+				paraMap.put("hql", hql);
 			}
 		} else {
 			paraMap.put("paraObjects", ((Object) (objs)));
-			paraMap.put("sql", sql);
+			paraMap.put("hql", hql);
 		}
 		return paraMap;
 	}
 
-	protected long loadTotalSize(String sql, Object objs[]) throws Exception {
+	protected long loadTotalSize(String hql, Object objs[]) throws Exception {
 		long count = 0L;
 		String midSql = null;
 		try {
-			midSql = getCountSql(sql);
+			midSql = getCountSql(hql);
 			Query sqlQuery = getCurrentSession().createQuery(midSql);
 			if (objs != null && objs.length > 0) {
 				for (int i = 0; i < objs.length; i++)
@@ -308,9 +250,9 @@ public class CommonDaoHibernate<T extends Serializable> implements CommonDao {
 		return count;
 	}
 	
-	public String getCountSql(String sql) {
+	public String getCountSql(String hql) {
 		String finalSql = "";
-		String fromSegment = sql;
+		String fromSegment = hql;
 		int fromStartIndex = StringUtils.indexOf(fromSegment.toLowerCase(), "from ");
 		fromSegment = StringUtils.substring(fromSegment, fromStartIndex);
 		int orderStartIndex = StringUtils.lastIndexOf(fromSegment.toLowerCase(), " order ");
@@ -321,9 +263,9 @@ public class CommonDaoHibernate<T extends Serializable> implements CommonDao {
 				&& orderStartIndex > whereStartIndex) {
 			fromSegment = StringUtils.substring(fromSegment, 0, orderStartIndex);
 		}
-		int distinctStartIndex = StringUtils.indexOf(sql.toLowerCase(), "distinct ");
+		int distinctStartIndex = StringUtils.indexOf(hql.toLowerCase(), "distinct ");
 		if (distinctStartIndex > -1 && distinctStartIndex < fromStartIndex) {
-			String distinctSegment = sql.substring(distinctStartIndex, fromStartIndex);
+			String distinctSegment = hql.substring(distinctStartIndex, fromStartIndex);
 			distinctSegment = distinctSegment.trim();
 			finalSql = (new StringBuilder()).append("select count(")
 					.append(distinctSegment).append(") ").append(fromSegment)
@@ -334,10 +276,24 @@ public class CommonDaoHibernate<T extends Serializable> implements CommonDao {
 		}
 		return finalSql;
 	}
+	
+	@Override
+	public List find(String hql, Object[] objs, Type[] atype, Pagination pagination) throws Exception {
+		 return find(hql, objs, pagination);
+	}
 
 	@Override
-	public List find(String sql, Object[] objs, Type[] atype, Pagination pagination) throws Exception {
-		 return find(sql, objs, pagination);
+	public List findBySql(String sql) {
+		return this.getCurrentSession().createSQLQuery(sql).list();
+	}
+
+	@Override
+	public List findBySql(String sql, Map paramsMap) {
+		if(paramsMap!=null && paramsMap.size()>0){
+			return this.getCurrentSession().createSQLQuery(sql).setProperties(paramsMap).list();
+		}else{
+			return this.findBySql(sql);
+		}
 	}
 	
 	public Class<T> getEntityClass() {
