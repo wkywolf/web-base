@@ -2,11 +2,9 @@ package lich.maven.dao;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
 
 import lich.maven.model.Pagination;
 
-import org.hibernate.Session;
 import org.hibernate.type.Type;
 
 /**
