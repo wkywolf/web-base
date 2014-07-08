@@ -17,7 +17,7 @@ public class BaseServiceTest {
 	private User user = null;
 
 	@Autowired
-	private BaseService<User> baseService;
+	private BaseService baseService;
 	
 	@Test
 	public void find() {
@@ -49,7 +49,7 @@ public class BaseServiceTest {
 	@Test
 	public void findById() {
 		try{
-			user = baseService.findById(1);
+			user = baseService.findById(User.class, 1);
 			System.out.println(user);
 		}catch(Exception e) {
 			e.printStackTrace();

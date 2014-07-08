@@ -1,7 +1,6 @@
 package lich.maven.dao.impl;
 
 import java.io.Serializable;
-import java.lang.reflect.ParameterizedType;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -22,22 +21,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.ObjectRetrievalFailureException;
 import org.springframework.stereotype.Repository;
 
+@SuppressWarnings("rawtypes")
 @Repository
-@SuppressWarnings({ "rawtypes", "unchecked" })
-public abstract class CommonDaoHibernate<T extends Serializable> implements CommonDao {
-	
-	private Class<T> entityClass;
+public class CommonDaoHibernate implements CommonDao {
 	
 	@Autowired
 	private SessionFactory sessionFactory;
-	
-	protected CommonDaoHibernate(Class<T> entityClass) {
-		this.entityClass = entityClass;
-	}
-//	public CommonDaoHibernate() {
-//		this.entityClass = (Class<T>) ((ParameterizedType) getClass()
-//				.getGenericSuperclass()).getActualTypeArguments()[0];
-//	}
 	
 	@Override
 	public Session getCurrentSession() {
@@ -45,18 +34,18 @@ public abstract class CommonDaoHibernate<T extends Serializable> implements Comm
 	}
 
 	@Override
-	public Object getObject(Serializable id) {
-        Object o = getCurrentSession().get(entityClass, id);
+	public Object getObject(Class<?> clazz, Serializable id) {
+        Object o = getCurrentSession().get(clazz, id);
         if(o == null)
-            throw new ObjectRetrievalFailureException(entityClass, id);
+            throw new ObjectRetrievalFailureException(clazz, id);
         return o;
 	}
 
 	@Override
-	public Object loadObject(Serializable id) {
-        Object o = getCurrentSession().load(entityClass, id);
+	public Object loadObject(Class<?> clazz, Serializable id) {
+        Object o = getCurrentSession().load(clazz, id);
         if(o == null)
-            throw new ObjectRetrievalFailureException(entityClass, id);
+            throw new ObjectRetrievalFailureException(clazz, id);
         return o;
 	}
 
@@ -78,8 +67,8 @@ public abstract class CommonDaoHibernate<T extends Serializable> implements Comm
 	}
 
 	@Override
-	public void removeObject(Serializable id) {
-		getCurrentSession().delete(getObject(id));
+	public void removeObject(Class<?> clazz, Serializable id) {
+		getCurrentSession().delete(getObject(clazz, id));
 
 	}
 
@@ -89,7 +78,7 @@ public abstract class CommonDaoHibernate<T extends Serializable> implements Comm
 	}
 
 	@Override
-	public List<T> find(String hql, Pagination pagination) throws Exception {
+	public List find(String hql, Pagination pagination) throws Exception {
 		try {
 			if (pagination == null)
 				return find(hql);
@@ -97,7 +86,7 @@ public abstract class CommonDaoHibernate<T extends Serializable> implements Comm
 			throw he;
 		}
 		try {
-			List<T> rt = find(hql, new Object[0], new Type[0], pagination);
+			List rt = find(hql, new Object[0], new Type[0], pagination);
 			return rt;
 		} catch (Exception he) {
 			throw he;
@@ -105,15 +94,15 @@ public abstract class CommonDaoHibernate<T extends Serializable> implements Comm
 	}
 
 	@Override
-	public List<T> find(String hql, Object obj, Pagination pagination) throws Exception {
+	public List find(String hql, Object obj, Pagination pagination) throws Exception {
         if(pagination == null)
             return findbyhsql(hql, obj);
-        List<T> rt = find(hql, new Object[] { obj }, pagination);
+        List rt = find(hql, new Object[] { obj }, pagination);
         return rt;
 	}
 
 	@Override
-	public List<T> find(String hql, Object[] objs, Pagination pagination) throws Exception {
+	public List find(String hql, Object[] objs, Pagination pagination) throws Exception {
         Map paraMap = getParaMap(hql, objs);
         hql = (String)paraMap.get("hql");
         objs = (Object[])(Object[])paraMap.get("paraObjects");
@@ -168,8 +157,8 @@ public abstract class CommonDaoHibernate<T extends Serializable> implements Comm
 	}
 
 	@Override
-	public List<T> findAll() {
-        List<T> rt = getCurrentSession().createQuery("from " + this.entityClass.getName()).list();
+	public List findAll(Class<?> clazz) {
+        List rt = getCurrentSession().createQuery("from " + clazz.getName()).list();
         return rt;
 	}
 
@@ -291,30 +280,22 @@ public abstract class CommonDaoHibernate<T extends Serializable> implements Comm
 	}
 	
 	@Override
-	public List<T> find(String hql, Object[] objs, Type[] atype, Pagination pagination) throws Exception {
+	public List find(String hql, Object[] objs, Type[] atype, Pagination pagination) throws Exception {
 		 return find(hql, objs, pagination);
 	}
 
 	@Override
-	public List<T> findBySql(String sql) {
+	public List findBySql(String sql) {
 		return this.getCurrentSession().createSQLQuery(sql).list();
 	}
 
 	@Override
-	public List<T> findBySql(String sql, Map paramsMap) {
+	public List findBySql(String sql, Map paramsMap) {
 		if(paramsMap!=null && paramsMap.size()>0){
 			return this.getCurrentSession().createSQLQuery(sql).setProperties(paramsMap).list();
 		}else{
 			return this.findBySql(sql);
 		}
-	}
-	
-	public Class<T> getEntityClass() {
-		return entityClass;
-	}
-
-	public void setEntityClass(Class<T> entityClass) {
-		this.entityClass = entityClass;
 	}
 
 }

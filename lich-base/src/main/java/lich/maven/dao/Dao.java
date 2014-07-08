@@ -7,11 +7,11 @@ import java.io.Serializable;
  * @author Lich
  * 2014年7月6日 下午5:55:38
  */
-public interface Dao<T extends Serializable> {
+public interface Dao {
 	
-    public abstract Object getObject(Serializable id);
+    public abstract Object getObject(Class<?> clazz, Serializable id);
 
-    public abstract Object loadObject(Serializable id);
+    public abstract Object loadObject(Class<?> clazz, Serializable id);
 
     public abstract void saveObject(Object obj);
 
@@ -19,7 +19,7 @@ public interface Dao<T extends Serializable> {
 
     public abstract void updateObject(Object obj);
 
-    public abstract void removeObject(Serializable id);
+    public abstract void removeObject(Class<?> clazz, Serializable id);
 
     public abstract void removeObject(Object obj);
 
