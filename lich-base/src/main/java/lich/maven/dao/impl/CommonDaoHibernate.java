@@ -24,23 +24,20 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @SuppressWarnings({ "rawtypes", "unchecked" })
-public class CommonDaoHibernate<T extends Serializable> implements CommonDao {
+public abstract class CommonDaoHibernate<T extends Serializable> implements CommonDao {
 	
 	private Class<T> entityClass;
 	
 	@Autowired
 	private SessionFactory sessionFactory;
 	
-//	protected CommonDaoHibernate(Class<T> entityClass) {
-//		this.entityClass = entityClass;
-//	}
-	public CommonDaoHibernate() {
-//		this.entityClass = (Class<T>) ((ParameterizedType) getClass()
-//				.getGenericSuperclass()).getActualTypeArguments()[0];.
-		java.lang.reflect.Type type = ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[1];
-		System.out.println(type);
-		this.entityClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+	protected CommonDaoHibernate(Class<T> entityClass) {
+		this.entityClass = entityClass;
 	}
+//	public CommonDaoHibernate() {
+//		this.entityClass = (Class<T>) ((ParameterizedType) getClass()
+//				.getGenericSuperclass()).getActualTypeArguments()[0];
+//	}
 	
 	@Override
 	public Session getCurrentSession() {
