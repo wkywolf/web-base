@@ -2,7 +2,6 @@ package lich.maven.service.impl;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
 
 import lich.maven.dao.CommonDao;
 import lich.maven.model.Pagination;
@@ -12,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-@SuppressWarnings("unchecked")
 @Service("BaseServiceImpl")
 public class BaseServiceImpl<T extends Serializable> implements BaseService<T> {
 
