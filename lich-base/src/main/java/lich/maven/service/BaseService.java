@@ -4,40 +4,39 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-import lich.maven.dao.Dao;
+import lich.maven.model.Pagination;
 
 /**
  * <p>BaseService 业务基础类</p>
  * 
  * @author Lich 2014年7月4日 下午2:39:48
  */
-public interface BaseService {
+public interface BaseService<T extends Serializable> {
 	
-	public <T> T getEntityById(String entityName, Integer id);
+	public T findById(String entityName, Integer id);
 	
-	public <T> List<T> find(String hql);
+	public List<T> findByHsql(String hql);
 	/**
 	 * <p>通过ID获取该实体的信息</p>
 	 * @param id
-	 * @return Entity
+	 * @return model
 	 */
-	public <T> T findById(Class<T> clazz, Serializable id);
+	public T findById(Class<T> clazz, Integer id);
 	/**
 	 * <p>保存与更新</p>
-	 * @param entity
+	 * @param model
 	 */
-	public <T> void saveOrUpdate(T entity);
-	/**
-	 * <p>通过SQL与参数查询结果集</p>
-	 * @param sql
-	 * @param paramsMap
-	 * @return List
-	 */
-	public <T> List<T> findBySql(String sql, Map<String, Object> paramsMap);
+	public void saveOrUpdate(T model);
 	/**
 	 * <p>更新</p>
-	 * @param entity
+	 * @param model
 	 */
-	public <T> void update(T entity);
+	public void update(T model);
+	
+	public void delete(T model);
+	
+	public void deleteById(Class<T> clazz, Integer id);
+	
+	public List<T> find(String hql, Pagination<T> pagination) throws Exception;
 	
 }

@@ -19,11 +19,11 @@ import org.hibernate.SessionFactory;
 import org.hibernate.type.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.ObjectRetrievalFailureException;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 
-@SuppressWarnings("rawtypes")
-@Repository
-public class CommonDaoHibernate implements CommonDao {
+@SuppressWarnings("unchecked")
+@Component("CommonDaoHibernate")
+public class CommonDaoHibernate<T extends Serializable> implements CommonDao<T> {
 	
 	@Autowired
 	private SessionFactory sessionFactory;
@@ -34,135 +34,121 @@ public class CommonDaoHibernate implements CommonDao {
 	}
 
 	@Override
-	public Object getObject(Class<?> clazz, Serializable id) {
-        Object o = getCurrentSession().get(clazz, id);
-        if(o == null)
+	public T getById(Class<T> clazz, Serializable id) {
+        T t = (T) getCurrentSession().get(clazz, id);
+        if(t == null)
             throw new ObjectRetrievalFailureException(clazz, id);
-        return o;
+        return t;
 	}
 
 	@Override
-	public Object loadObject(Class<?> clazz, Serializable id) {
-        Object o = getCurrentSession().load(clazz, id);
-        if(o == null)
-            throw new ObjectRetrievalFailureException(clazz, id);
-        return o;
+	public T getById(String entityName, Serializable id) {
+        return (T) getCurrentSession().get(entityName, id);
 	}
 
 	@Override
-	public void saveObject(Object obj) {
-		getCurrentSession().save(obj);
-//		getCurrentSession().flush();
+	public void saveObject(T model) {
+		getCurrentSession().save(model);
 	}
 
 	@Override
-	public void refreshObject(Object obj) {
-		getCurrentSession().refresh(obj);
+	public void updateObject(T model) {
+		getCurrentSession().saveOrUpdate(model);
 	}
 
 	@Override
-	public void updateObject(Object obj) {
-		getCurrentSession().saveOrUpdate(obj);
-//		getCurrentSession().flush();
+	public void refreshObject(T model) {
+		getCurrentSession().refresh(model);
+	}
+	
+	@Override
+	public void removeObject(Class<T> clazz, Serializable id) {
+		getCurrentSession().delete(getById(clazz, id));
 	}
 
 	@Override
-	public void removeObject(Class<?> clazz, Serializable id) {
-		getCurrentSession().delete(getObject(clazz, id));
-
+	public void removeObject(T model) {
+		getCurrentSession().delete(model);
 	}
 
 	@Override
-	public void removeObject(Object obj) {
-		getCurrentSession().delete(obj);
-	}
-
-	@Override
-	public List find(String hql, Pagination pagination) throws Exception {
+	public List<T> find(String hql, Pagination<T> pagination) {
 		try {
-			if (pagination == null)
-				return find(hql);
-		} catch (Exception he) {
-			throw he;
-		}
-		try {
-			List rt = find(hql, new Object[0], new Type[0], pagination);
-			return rt;
-		} catch (Exception he) {
-			throw he;
+			if (pagination == null) {
+				return findByHsql(hql);
+			}else{
+				return find(hql, new Object[0], new Type[0], pagination);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
 		}
 	}
+	
+	@Override
+	public List<T> find(String hql, Object[] objs, Type[] atype, Pagination<T> pagination) {
+		 return find(hql, objs, pagination);
+	}
 
 	@Override
-	public List find(String hql, Object obj, Pagination pagination) throws Exception {
+	public List<T> find(String hql, Object obj, Pagination<T> pagination) {
         if(pagination == null)
-            return findbyhsql(hql, obj);
-        List rt = find(hql, new Object[] { obj }, pagination);
-        return rt;
+            return findByHsql(hql, obj);
+        else
+        	return find(hql, new Object[] { obj }, pagination);
 	}
 
 	@Override
-	public List find(String hql, Object[] objs, Pagination pagination) throws Exception {
-        Map paraMap = getParaMap(hql, objs);
+	public List<T> find(String hql, Object[] objs, Pagination<T> pagination) {
+        Map<String, Object> paraMap = getParaMap(hql, objs);
         hql = (String)paraMap.get("hql");
-        objs = (Object[])(Object[])paraMap.get("paraObjects");
+        objs = (Object[])paraMap.get("paraObjects");
         if(pagination == null)
-            return getCurrentSession().createQuery(hql).setProperties(paraMap).list();
-        pagination.setTotalCount(loadTotalSize(hql, objs));
+            return findByHsql(hql, objs);
+        pagination.setTotalCount(getTotalSize(hql, objs));
         Query sqlQuery = null;
-        List ls = null;
+        List<T> ls = null;
 		try {
 			sqlQuery = getCurrentSession().createQuery(hql);
-			if (objs != null && objs.length > 0) {
-				for (int i = 0; i < objs.length; i++) {
-					sqlQuery.setParameter(i, objs[i]);
-				}
-			}
+			this.setProperties(sqlQuery, objs);
 			sqlQuery.setFirstResult((int) pagination.getStartIndex() - 1).setMaxResults((int)pagination.getPageSize());
 			ls = sqlQuery.list();
 			if (ls == null)
-				ls = new ArrayList(0);
+				ls = new ArrayList<T>(0);
 		} catch (HibernateException e) {
 			e.printStackTrace();
 		}
+		pagination.setResultList(ls);
 		return ls;
 	}
 
 	@Override
-	public List find(String hql) {
-        return findbyhsql(hql, new Object[0]);
+	public List<T> findByHsql(String hql) {
+        return findByHsql(hql, new Object[0]);
 	}
 
 	@Override
-	public List findbyhsql(String hql, Object parameter) {
-        Object parameters[] = new Object[1];
-        parameters[0] = parameter;
-        Map paraMap = getParaMap(hql, parameters);
+	public List<T> findByHsql(String hql, Object parameter) {
+        Object parameters[] = new Object[]{ parameter };
+        return findByHsql(hql, parameters);
+	}
+
+	@Override
+	public List<T> findByHsql(String hql, Object[] parameters) {
+		Map<String, Object> paraMap = getParaMap(hql, parameters);
         hql = (String)paraMap.get("hql");
-        List rt = getCurrentSession().createQuery(hql).setProperties(paraMap).list();
-        return rt;
+        parameters = (Object[])paraMap.get("paraObjects");
+        Query query = getCurrentSession().createQuery(hql);
+        this.setProperties(query, parameters);
+        return query.list();
 	}
 
 	@Override
-	public List findbyhsql(String hql, Object[] parameters) {
-        Map paraMap = getParaMap(hql, parameters);
-        hql = (String)paraMap.get("hql");
-        List rt = getCurrentSession().createQuery(hql).setProperties(paraMap).list();
-        return rt;
+	public List<T> findAll(Class<T> clazz) {
+        return getCurrentSession().createQuery("from " + clazz.getName()).list();
 	}
 
-	@Override
-	public Object loadById(String entityName, Serializable id) {
-        return getCurrentSession().get(entityName, id);
-	}
-
-	@Override
-	public List findAll(Class<?> clazz) {
-        List rt = getCurrentSession().createQuery("from " + clazz.getName()).list();
-        return rt;
-	}
-
-	public static Map<String, Object> getParaMap(String hql, Object objs[]) {
+	public static Map<String, Object> getParaMap(String hql, Object[] objs) {
 		Map<String, Object> paraMap = new HashMap<String, Object>();
 		if (hql.toLowerCase().indexOf("to_date") >= 0) {
 			try {
@@ -227,7 +213,7 @@ public class CommonDaoHibernate implements CommonDao {
 		return paraMap;
 	}
 
-	protected long loadTotalSize(String hql, Object objs[]) throws Exception {
+	protected long getTotalSize(String hql, Object[] objs) {
 		long count = 0L;
 		String midSql = null;
 		try {
@@ -238,7 +224,7 @@ public class CommonDaoHibernate implements CommonDao {
 					sqlQuery.setParameter(i, objs[i]);
 
 			}
-			List ls = sqlQuery.list();
+			List<T> ls = sqlQuery.list();
 			if (ls != null && ls.size() > 0) {
 				Object obj = ls.get(0);
 				if (obj instanceof Integer)
@@ -278,23 +264,37 @@ public class CommonDaoHibernate implements CommonDao {
 		}
 		return finalSql;
 	}
-	
+
 	@Override
-	public List find(String hql, Object[] objs, Type[] atype, Pagination pagination) throws Exception {
-		 return find(hql, objs, pagination);
+	public List<T> findBySql(String sql, Class<T> clazz) {
+		return findBySql(sql, new Object[0], clazz);
 	}
 
 	@Override
-	public List findBySql(String sql) {
-		return this.getCurrentSession().createSQLQuery(sql).list();
+	public List<T> findBySql(String sql, Object parameter, Class<T> clazz) {
+		Object[] parameters = new Object[]{ parameter };
+		return findBySql(sql, parameters, clazz);
 	}
 
 	@Override
-	public List findBySql(String sql, Map paramsMap) {
-		if(paramsMap!=null && paramsMap.size()>0){
-			return this.getCurrentSession().createSQLQuery(sql).setProperties(paramsMap).list();
-		}else{
-			return this.findBySql(sql);
+	public List<T> findBySql(String sql, Object[] parameters, Class<T> clazz) {
+		Map<String, Object> paraMap = getParaMap(sql, parameters);
+		sql = (String)paraMap.get("hql");
+        parameters = (Object[])paraMap.get("paraObjects");
+        Query query = getCurrentSession().createSQLQuery(sql).addEntity(clazz);
+        this.setProperties(query, parameters);
+        return query.list();
+	}
+	/**
+	 * 设置参数
+	 * @param query
+	 * @param parameters
+	 */
+	private void setProperties(Query query, Object[] parameters) {
+      if (parameters != null && parameters.length > 0) {
+			for (int i = 0; i < parameters.length; i++) {
+				query.setParameter(i, parameters[i]);
+			}
 		}
 	}
 
