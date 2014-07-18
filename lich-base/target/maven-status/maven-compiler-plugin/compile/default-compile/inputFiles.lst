@@ -1,1 +1,6 @@
-E:\Workspace_test\lich-base\src\main\java\lich\maven\dao\AbstractHibernateDao.java
+E:\Workspace_test\web-base\lich-base\src\main\java\lich\maven\controller\BaseController.java
+E:\Workspace_test\web-base\lich-base\src\main\java\lich\maven\dao\BaseDao.java
+E:\Workspace_test\web-base\lich-base\src\main\java\lich\maven\dao\CommonDao.java
+E:\Workspace_test\web-base\lich-base\src\main\java\lich\maven\service\impl\BaseServiceImpl.java
+E:\Workspace_test\web-base\lich-base\src\main\java\lich\maven\dao\impl\CommonDaoHibernate.java
+E:\Workspace_test\web-base\lich-base\src\main\java\lich\maven\service\BaseService.java

@@ -1,1 +1,6 @@
-lich\maven\dao\AbstractHibernateDao.class
+lich\maven\service\impl\BaseServiceImpl.class
+lich\maven\dao\impl\CommonDaoHibernate.class
+lich\maven\dao\BaseDao.class
+lich\maven\controller\BaseController.class
+lich\maven\service\BaseService.class
+lich\maven\dao\CommonDao.class

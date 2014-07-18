@@ -63,6 +63,11 @@
 				<artifactId>spring-test</artifactId>
 				<version>${spring.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-context-support</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
 						
 			<!-- hibernate -->
 			<dependency>
@@ -92,6 +97,26 @@
 				<artifactId>aspectjweaver</artifactId>
 				<version>1.8.1</version>
 			</dependency>
+<!-- 			<dependency> -->
+<!-- 				<groupId>log4j</groupId> -->
+<!-- 				<artifactId>log4j</artifactId> -->
+<!-- 				<version>1.2.16</version> -->
+<!-- 			</dependency> -->
+			<dependency>
+				<groupId>org.no-hope</groupId>
+				<artifactId>slf4j-logging</artifactId>
+				<version>0.1.5</version>
+			</dependency>
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>javax.servlet-api</artifactId>
+				<version>3.0.1</version>
+			</dependency>
+			<dependency>
+				<groupId>org.freemarker</groupId>
+				<artifactId>freemarker-gae</artifactId>
+				<version>2.3.20</version>
+			</dependency>
 						
 		</dependencies>
 	</dependencyManagement>
@@ -111,7 +136,13 @@
 				<plugin>
 					<groupId>org.mortbay.jetty</groupId>
 					<artifactId>jetty-maven-plugin</artifactId>
-<!-- 					<version>${jetty.version}</version> -->
+					<configuration>
+					    <scanIntervalSeconds>10</scanIntervalSeconds>
+						<webApp>
+							<contextPath>/lich-web</contextPath>
+						</webApp>
+						<stopPort>8080</stopPort>
+					</configuration>
 				</plugin>
 			</plugins>
 		</pluginManagement>

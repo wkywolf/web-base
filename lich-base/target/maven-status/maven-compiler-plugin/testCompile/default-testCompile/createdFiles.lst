@@ -1,1 +1,2 @@
-lich\maven\base\AppTest.class
+lich\maven\service\BaseServiceTest.class
+lich\maven\model\User.class

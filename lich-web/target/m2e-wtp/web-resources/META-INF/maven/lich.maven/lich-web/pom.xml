@@ -23,10 +23,23 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.springframework</groupId> -->
+<!-- 			<artifactId>spring-webmvc</artifactId> -->
+<!-- 		</dependency> -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>log4j</groupId> -->
+<!-- 			<artifactId>log4j</artifactId> -->
+<!-- 		</dependency> -->
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-webmvc</artifactId>
+			<groupId>org.no-hope</groupId>
+			<artifactId>slf4j-logging</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+		</dependency>
+				
 	</dependencies>
 	<build>
 		<finalName>lich-web</finalName>
@@ -46,11 +59,11 @@
 				<configuration>
 					<scanIntervalSeconds>10</scanIntervalSeconds>
 					<webApp>
-						<contextPath>/test</contextPath>
+						<contextPath>/lich-web</contextPath>
 					</webApp>
 					<connectors>
 						<connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
-							<port>9090</port>
+							<port>8080</port>
 							<maxIdleTime>60000</maxIdleTime>
 						</connector>
 					</connectors>
