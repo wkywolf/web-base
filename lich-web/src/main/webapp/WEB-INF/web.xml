@@ -13,7 +13,11 @@
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
-	<!-- 上面是定义一个servlet，DispatcherServlet主要是启动mvc框架的。也就是以do结尾的请求都转发到这个dispatchServlet然后由他转发到相应的controller。 -->
+	<!-- 
+		   上面是定义一个servlet，DispatcherServlet主要是启动mvc框架的。
+		 <url-pattern>/</url-pattern>全过滤，
+		 *.do为以do结尾的请求都转发到这个dispatchServlet然后由他转发到相应的controller。
+	-->
 	<servlet>
 		<servlet-name>springMVC</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
@@ -27,6 +31,12 @@
 		<servlet-name>springMVC</servlet-name>
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>CtxInitServlet</servlet-name>
+		<servlet-class>lich.web.servlet.CtxInitServlet</servlet-class>
+		<load-on-startup>0</load-on-startup>
+	</servlet>
 
 	<!-- Encoding 配置开始 -->
 	<!-- Spring Encoding Filter -->
