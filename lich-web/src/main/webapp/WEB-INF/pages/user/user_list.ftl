@@ -7,7 +7,9 @@
 	</head>
 	<body>
 		<div class="container">
-			<h3>用户列表信息</h3>
+			<div class="page-header">
+				<h3>用户列表信息</h3>
+			</div>
 			<form id="saveForm" action="${ctx}/user/list" method="get">
 				<table class="table table-bordered table-striped table-hover" style="text-align: center;">
 					<div>
@@ -20,6 +22,7 @@
 							<th>真实姓名</th>
 							<th>性别</th>
 							<th>密码</th>
+							<th>身份证号码</th>
 							<th>操作</th>
 						</tr>
 					</thead>
@@ -31,6 +34,7 @@
 								<td>${user.realName?if_exists}</td>
 								<td>${user.sex?if_exists}</td>
 								<td>${user.password?if_exists}</td>
+								<td>${(user.idCard.cardNum)?if_exists}</td>
 								<td>
 									<a href="${ctx}/user/update?id=${user.id?if_exists}">修改</a>
 									<a href="javaScript:deleteUser('${ctx}/user/delete?id=${user.id?if_exists}');" id="delete">删除</a>

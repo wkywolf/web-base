@@ -6,8 +6,10 @@
 		<title>新增用户</title>
 	</head>
 	<body>
-		<div align="center">
-			<h3>新增或更新用户信息</h3>
+		<div class="container">
+			<div class="page-header">
+				<h3>新增或更新 <small>用户信息</small></h3>
+			</div>
 			<form action="${ctx?if_exists}/user/save" method="post" class="form-horizontal" role="form">
 				<input type="hidden" name="id" value="${user.id?if_exists}" />
 				<div class="form-group">
@@ -34,6 +36,16 @@
 			      		<input type="text" class="form-control" id="sex" name="sex" value="${user.sex?if_exists}" placeholder="性别">
 			    	</div>
 			  	</div>
+			  	<fieldset>
+			  		
+			  		<legend>身份证</legend>
+			  		<div class="form-group">
+						<label for="sex" class="col-sm-2 control-label">身份证号：</label>
+						<div class="col-sm-2">
+				      		<input type="text" class="form-control" id="idCard.cardNum" name="idCard.cardNum" value="${(user.idCard.cardNum)?if_exists}" placeholder="身份证号">
+				    	</div>
+				  	</div>
+			  	</fieldset>
 			  	<div class="form-group">
 			    	<div class="col-sm-offset-2 col-sm-2">
 			      		<button type="submit" class="btn btn-primary">提交</button>

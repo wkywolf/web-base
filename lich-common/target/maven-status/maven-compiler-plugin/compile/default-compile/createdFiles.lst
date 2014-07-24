@@ -1,2 +1,2 @@
-lich\maven\util\ArithUtil.class
-lich\maven\model\Pagination.class
+com\lich\common\model\Pagination.class
+com\lich\common\util\ArithUtil.class

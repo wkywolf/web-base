@@ -44,6 +44,17 @@ public class UserController {
 		return "user/user_add";
 	}
 	
+	@RequestMapping(value="/save", method=RequestMethod.POST)
+	public String save(User user, ModelMap modelMap) {
+		try{
+			userService.saveOrUpdateUser(user);
+		}catch(Exception e){
+			e.printStackTrace();
+			log.error(e.getMessage() + "新增或更新失败...");
+		}
+		return "redirect:/user/list";
+	}
+	
 	@RequestMapping(value="/update", method=RequestMethod.GET)
 	public String update(@RequestParam Long id, ModelMap modelMap) {
 		try{
@@ -59,17 +70,6 @@ public class UserController {
 			log.error(e.getMessage() + "获取ID＝" + id + "的用户信息失败...");
 		}
 		return "user/user_add";
-	}
-	
-	@RequestMapping(value="/save", method=RequestMethod.POST)
-	public String save(User user, ModelMap modelMap) {
-		try{
-			userService.saveOrUpdateUser(user);
-		}catch(Exception e){
-			e.printStackTrace();
-			log.error(e.getMessage() + "新增或更新失败...");
-		}
-		return "redirect:/user/list";
 	}
 	
 	@RequestMapping(value="delete", method=RequestMethod.POST)

@@ -2,11 +2,14 @@ package lich.web.model;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 /**
  * 用户实体
@@ -28,8 +31,8 @@ public class User implements Serializable {
 	 * 字段值为只读的，不允许插入和修改。通常用于主键和外键
 	 */
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="id", insertable=false, updatable=false)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name="id", insertable=false, updatable=false, columnDefinition="int", scale=19)
 	private Long id;
 	/**
 	 * length=20, unique=true, nullable=false
@@ -46,6 +49,14 @@ public class User implements Serializable {
 	
 	@Column(name="sex", length=4)
 	private String sex;
+	
+	/**
+	 * optional = true设置idcard属性可以为null
+	 * cascade = CascadeType.ALL 设置级联刷新与更新
+	 */
+	@OneToOne(optional=true, cascade=CascadeType.ALL)
+	@JoinColumn(name="id_card", referencedColumnName="id", unique=true)
+	private IdentifyCard idCard;
 
 	public Long getId() {
 		return id;
@@ -85,6 +96,14 @@ public class User implements Serializable {
 
 	public void setSex(String sex) {
 		this.sex = sex;
+	}
+
+	public IdentifyCard getIdCard() {
+		return idCard;
+	}
+
+	public void setIdCard(IdentifyCard idCard) {
+		this.idCard = idCard;
 	}
 
 }

@@ -5,7 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import lich.maven.dao.CommonDao;
+import com.lich.base.dao.CommonDao;
+
 import lich.web.model.User;
 import lich.web.service.UserService;
 @Service

@@ -1,8 +1,8 @@
-E:\Workspace_test\web-base\lich-base\src\main\java\lich\maven\dao\BaseDao.java
-E:\Workspace_test\web-base\lich-base\src\main\java\lich\maven\controller\BaseController.java
-E:\Workspace_test\web-base\lich-base\src\main\java\lich\maven\servlet\CtxInitServlet.java
-E:\Workspace_test\web-base\lich-base\src\main\java\lich\maven\dao\CommonDao.java
-E:\Workspace_test\web-base\lich-base\src\main\java\lich\maven\service\impl\BaseServiceImpl.java
-E:\Workspace_test\web-base\lich-base\src\main\java\lich\maven\dao\impl\CommonDaoHibernate.java
-E:\Workspace_test\web-base\lich-base\src\main\java\lich\maven\service\BaseService.java
-E:\Workspace_test\web-base\lich-base\src\main\java\lich\maven\interceptor\CtxInitInterceptor.java
+E:\Workspace_test\web-base\lich-base\src\main\java\com\lich\base\service\impl\BaseServiceImpl.java
+E:\Workspace_test\web-base\lich-base\src\main\java\com\lich\base\dao\BaseDao.java
+E:\Workspace_test\web-base\lich-base\src\main\java\com\lich\base\service\BaseService.java
+E:\Workspace_test\web-base\lich-base\src\main\java\com\lich\base\servlet\CtxInitServlet.java
+E:\Workspace_test\web-base\lich-base\src\main\java\com\lich\base\dao\impl\CommonDaoHibernate.java
+E:\Workspace_test\web-base\lich-base\src\main\java\com\lich\base\controller\BaseController.java
+E:\Workspace_test\web-base\lich-base\src\main\java\com\lich\base\dao\CommonDao.java
+E:\Workspace_test\web-base\lich-base\src\main\java\com\lich\base\interceptor\CtxInitInterceptor.java
