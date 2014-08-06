@@ -46,6 +46,9 @@
 		</property>
 	</bean>
 	
+	<!-- 定义 Autowired  自动注入 bean -->
+<!--     <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/> -->
+	
 	<mvc:interceptors>
 		<mvc:interceptor>
 			<mvc:mapping path="/**" />
@@ -82,7 +85,7 @@
 	<mvc:annotation-driven />
 	
 	<context:component-scan base-package="com.lich.base.*" />
-	
+
 	<aop:config expose-proxy="true">
 		<aop:pointcut id="txPointcut" expression="execution(* com.lich.base.dao..*.*(..))" />
 		<aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut" />
