@@ -58,14 +58,14 @@
     <!-- Encoding 配置结束 -->
     
 	<!-- log4j 配置 开始 -->
-<!-- 	<context-param> -->
-<!-- 		<param-name>log4jConfigLocation</param-name> -->
-<!-- 		<param-value>classpath:log4j.properties</param-value> -->
-<!-- 	</context-param> -->
+	<context-param>
+		<param-name>log4jConfigLocation</param-name>
+		<param-value>classpath:log4j.properties</param-value>
+	</context-param>
 	<!-- Spring Log4j Listener -->
-<!-- 	<listener> -->
-<!-- 		<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class> -->
-<!-- 	</listener> -->
+	<listener>
+		<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+	</listener>
 	<!-- log4j 配置 结束 -->
 
 	<welcome-file-list>

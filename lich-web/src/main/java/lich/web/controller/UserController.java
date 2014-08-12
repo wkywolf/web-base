@@ -27,6 +27,8 @@ public class UserController {
 
 	private static final Logger log = LoggerFactory.getLogger(UserController.class);
 	
+//	private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(UserController.class);
+	
 	@Autowired
 	private UserService userService;
 	
@@ -35,6 +37,9 @@ public class UserController {
 	public String list(HttpServletRequest req, ModelMap modelMap) {
 		List<User> users = userService.findUsers();
 		modelMap.put("users", users);
+		log.info("成功获取列表……");
+		log.error("错误信息......");
+		log.debug("debug......");
 		return "user/user_list";
 	}
 	

@@ -27,13 +27,13 @@
 <!-- 			<groupId>org.springframework</groupId> -->
 <!-- 			<artifactId>spring-webmvc</artifactId> -->
 <!-- 		</dependency> -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>log4j</groupId> -->
-<!-- 			<artifactId>log4j</artifactId> -->
-<!-- 		</dependency> -->
 		<dependency>
-			<groupId>org.no-hope</groupId>
-			<artifactId>slf4j-logging</artifactId>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>

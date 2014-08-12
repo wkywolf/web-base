@@ -13,7 +13,6 @@ import org.hibernate.type.Type;
  * 2014年7月6日 下午5:56:32
  */
 public interface CommonDao<T extends Serializable> extends BaseDao<T> {
-	
 	/**
 	 * 基于HQL语句分页查询列表
 	 * @param hql

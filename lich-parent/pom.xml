@@ -9,7 +9,6 @@
 	<modules>
 		<module>../lich-common</module>
 		<module>../lich-base</module>
-<!-- 		<module>../lich-service</module> -->
 		<module>../lich-web</module>
 	</modules>
 
@@ -97,16 +96,17 @@
 				<artifactId>aspectjweaver</artifactId>
 				<version>1.8.1</version>
 			</dependency>
-<!-- 			<dependency> -->
-<!-- 				<groupId>log4j</groupId> -->
-<!-- 				<artifactId>log4j</artifactId> -->
-<!-- 				<version>1.2.16</version> -->
-<!-- 			</dependency> -->
 			<dependency>
-				<groupId>org.no-hope</groupId>
-				<artifactId>slf4j-logging</artifactId>
-				<version>0.1.5</version>
+				<groupId>log4j</groupId>
+				<artifactId>log4j</artifactId>
+				<version>1.2.16</version>
 			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-log4j12</artifactId>
+				<version>1.7.6</version>
+			</dependency>
+
 			<dependency>
 				<groupId>javax.servlet</groupId>
 				<artifactId>javax.servlet-api</artifactId>
