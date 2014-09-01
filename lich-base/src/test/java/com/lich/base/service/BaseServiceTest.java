@@ -32,7 +32,7 @@ public class BaseServiceTest {
 	
 	@Test
 	public void findByHql() {
-		users = baseService.findByHsql("from User");
+		users = (List<User>) baseService.findByHsql("from User");
 		for(User u : users) {
 			System.out.println(u.toString());
 		}

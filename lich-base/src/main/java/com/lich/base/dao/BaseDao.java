@@ -34,17 +34,17 @@ public interface BaseDao<T extends Serializable> {
 	public T getById(String entityName, Serializable id);
 	/**
 	 * 保存对象
-	 * @param model
+	 * @param com.pet.admin.model
 	 */
-    public void saveObject(T model);
+    public T saveObject(T model);
     /**
      * 更新对象
-     * @param model
+     * @param com.pet.admin.model
      */
     public void updateObject(T model);
     /**
      * 刷新对象
-     * @param model
+     * @param com.pet.admin.model
      */
     public void refreshObject(T model);
     /**
@@ -55,7 +55,7 @@ public interface BaseDao<T extends Serializable> {
     public void removeObject(Class<T> clazz, Serializable id);
     /**
      * 根据对象删除对象
-     * @param model
+     * @param com.pet.admin.model
      */
     public void removeObject(T model);
 

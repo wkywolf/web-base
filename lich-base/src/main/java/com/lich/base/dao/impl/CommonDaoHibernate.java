@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.lich.common.model.Pagination;
-
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
@@ -17,10 +15,10 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.type.Type;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.ObjectRetrievalFailureException;
 import org.springframework.stereotype.Component;
 
 import com.lich.base.dao.CommonDao;
+import com.lich.common.model.Pagination;
 
 @SuppressWarnings("unchecked")
 @Component("CommonDaoHibernate")
@@ -37,8 +35,8 @@ public class CommonDaoHibernate<T extends Serializable> implements CommonDao<T> 
 	@Override
 	public T getById(Class<T> clazz, Serializable id) {
         T t = (T) getCurrentSession().get(clazz, id);
-        if(t == null)
-            throw new ObjectRetrievalFailureException(clazz, id);
+//        if(t == null)
+//            throw new ObjectRetrievalFailureException(clazz, id);
         return t;
 	}
 
@@ -48,8 +46,8 @@ public class CommonDaoHibernate<T extends Serializable> implements CommonDao<T> 
 	}
 
 	@Override
-	public void saveObject(T model) {
-		getCurrentSession().save(model);
+	public T saveObject(T model) {
+		return (T) getCurrentSession().save(model);
 	}
 
 	@Override
@@ -112,7 +110,7 @@ public class CommonDaoHibernate<T extends Serializable> implements CommonDao<T> 
 		try {
 			sqlQuery = getCurrentSession().createQuery(hql);
 			this.setProperties(sqlQuery, objs);
-			sqlQuery.setFirstResult((int) pagination.getStartIndex() - 1).setMaxResults((int)pagination.getPageSize());
+			sqlQuery.setFirstResult((int) pagination.getStartIndex()).setMaxResults((int)pagination.getPageSize());
 			ls = sqlQuery.list();
 			if (ls == null)
 				ls = new ArrayList<T>(0);

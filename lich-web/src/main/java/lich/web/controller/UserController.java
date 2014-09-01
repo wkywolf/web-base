@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.lich.base.controller.BaseController;
+
 /**
  * 用户Controller
  * @author Lich
@@ -23,23 +25,20 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 @Controller
 @RequestMapping("/user")
-public class UserController {
+public class UserController extends BaseController {
 
-	private static final Logger log = LoggerFactory.getLogger(UserController.class);
-	
-//	private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(UserController.class);
+	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 	
 	@Autowired
 	private UserService userService;
-	
 	
 	@RequestMapping(value="/list", method=RequestMethod.GET)
 	public String list(HttpServletRequest req, ModelMap modelMap) {
 		List<User> users = userService.findUsers();
 		modelMap.put("users", users);
-		log.info("成功获取列表……");
-		log.error("错误信息......");
-		log.debug("debug......");
+		logger.info("成功获取列表……");
+		logger.error("错误信息......");
+		logger.debug("debug......");
 		return "user/user_list";
 	}
 	
@@ -55,7 +54,7 @@ public class UserController {
 			userService.saveOrUpdateUser(user);
 		}catch(Exception e){
 			e.printStackTrace();
-			log.error(e.getMessage() + "新增或更新失败...");
+			logger.error(e.getMessage() + "新增或更新失败...");
 		}
 		return "redirect:/user/list";
 	}
@@ -72,7 +71,7 @@ public class UserController {
 			modelMap.put("user", user);
 		}catch(Exception e){
 			e.printStackTrace();
-			log.error(e.getMessage() + "获取ID＝" + id + "的用户信息失败...");
+			logger.error(e.getMessage() + "获取ID＝" + id + "的用户信息失败...");
 		}
 		return "user/user_add";
 	}
@@ -83,7 +82,7 @@ public class UserController {
 			userService.delete(id);
 		}catch(Exception e){
 			e.printStackTrace();
-			log.error(e.getMessage() + "删除失败...");
+			logger.error(e.getMessage() + "删除失败...");
 		}
 		return "redirect:/user/list";
 	}

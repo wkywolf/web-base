@@ -3,8 +3,6 @@ package com.lich.base.service.impl;
 import java.io.Serializable;
 import java.util.List;
 
-import com.lich.common.model.Pagination;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -12,15 +10,16 @@ import org.springframework.stereotype.Service;
 import com.lich.base.dao.CommonDao;
 import com.lich.base.service.BaseService;
 
+@SuppressWarnings({ "rawtypes", "unchecked" })
 @Service("BaseServiceImpl")
 public class BaseServiceImpl<T extends Serializable> implements BaseService<T> {
 
 	@Autowired
 	@Qualifier("CommonDaoHibernate")
-	private CommonDao<T> commonDao;
+	public CommonDao<T> commonDao;
 	
 	@Override
-	public T findById(Class<T> clazz, Integer id) {
+	public T findById(Class clazz, Serializable id) {
 		try{
 			return (T) commonDao.getById(clazz, id);
 		}catch(Exception e){
@@ -30,8 +29,13 @@ public class BaseServiceImpl<T extends Serializable> implements BaseService<T> {
 	}
 
 	@Override
+	public T save(T model) {
+		return commonDao.saveObject(model);
+	}
+	
+	@Override
 	public void saveOrUpdate(T model) {
-		commonDao.saveObject(model);
+		commonDao.updateObject(model);
 	}
 
 	@Override
@@ -45,7 +49,7 @@ public class BaseServiceImpl<T extends Serializable> implements BaseService<T> {
 	}
 
 	@Override
-	public T findById(String entityName, Integer id) {
+	public T findById(String entityName, Serializable id) {
 		return (T) commonDao.getById(entityName, id);
 	}
 
@@ -55,13 +59,8 @@ public class BaseServiceImpl<T extends Serializable> implements BaseService<T> {
 	}
 
 	@Override
-	public void deleteById(Class<T> clazz, Integer id) {
+	public void deleteById(Class clazz, Serializable id) {
 		commonDao.removeObject(clazz, id);
-	}
-
-	@Override
-	public List<T> find(String hql, Pagination<T> pagination) throws Exception {
-		return commonDao.find(hql, pagination);
 	}
 
 }

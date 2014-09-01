@@ -3,9 +3,9 @@ package com.lich.base.dao;
 import java.io.Serializable;
 import java.util.List;
 
-import com.lich.common.model.Pagination;
-
 import org.hibernate.type.Type;
+
+import com.lich.common.model.Pagination;
 
 /**
  * 对hsql和sql语法封闭接口
